@@ -149,12 +149,12 @@ export default function BannersPage() {
         </Space>
       </div>
 
-      <Alert
+      {/* <Alert
         type="info"
         showIcon
         style={{ marginBottom: 12 }}
         message="系统首次启动会自动生成 3 张默认 Banner（王者荣耀 / 英雄联盟 / 三角洲，主题：和悦网游）"
-      />
+      /> */}
 
       <Table rowKey="id" loading={loading} dataSource={banners} columns={columns} pagination={false} />
 

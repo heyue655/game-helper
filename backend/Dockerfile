@@ -1,4 +1,4 @@
-FROM node:docker.das-security.cn/node:22-alpine
+FROM docker.das-security.cn/node:22-alpine
 
 # 配置 apk 阿里云镜像加速
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
