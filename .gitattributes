@@ -1,0 +1,22 @@
+# 强制所有文本文件使用 LF 换行，禁止 Git 自动转换
+* text=auto eol=lf
+
+# 明确声明源码文件编码为 UTF-8
+*.js    text eol=lf encoding=utf-8
+*.jsx   text eol=lf encoding=utf-8
+*.ts    text eol=lf encoding=utf-8
+*.tsx   text eol=lf encoding=utf-8
+*.css   text eol=lf encoding=utf-8
+*.json  text eol=lf encoding=utf-8
+*.md    text eol=lf encoding=utf-8
+*.sql   text eol=lf encoding=utf-8
+*.env   text eol=lf encoding=utf-8
+*.conf  text eol=lf encoding=utf-8
+
+# 二进制文件不转换
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.svg   binary

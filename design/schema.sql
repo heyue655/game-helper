@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS platform_notes (
 
 INSERT INTO platform_notes (content) VALUES ('请在此处配置平台通用说明内容');
 
--- 初始化超级管理员（密码：Admin@123，实际使用时请修改）
--- password_hash 为 bcrypt hash of 'Admin@123'
+-- 初始化超级管理员（密码：admin123，正式上线后请及时修改）
+-- password_hash 为 bcrypt hash of 'admin123'（cost=10）
 INSERT INTO admins (username, password_hash, role) VALUES
-  ('admin', '$2b$10$placeholder_hash_change_me', 'SUPER');
+  ('admin', '$2b$10$2yzGpryzCER/Dt7/ScWg1uxirebST6ncIovpq1W/ovB1KI4cCqhqK', 'SUPER');
