@@ -1,4 +1,4 @@
-﻿const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client')
 const dayjs = require('dayjs')
 const { createWapPay } = require('../utils/alipay')
 const { success, fail } = require('../utils/response')
@@ -250,7 +250,24 @@ async function closeOrder(req, res) {
   })
   return success(res, null, '订单已关闭')
 }
-module.exports = { createOrder, listOrders, getOrder, deliverOrder, reviewOrder, complainOrder, mockPayOrder, getOrderCounts, listMyTasks, closeOrder }
+// 按订单号查询（支付宝 return_url 回跳时使用，out_trade_no 即为 orderNo）
+async function getOrderByNo(req, res) {
+  const order = await prisma.order.findFirst({
+    where: {
+      orderNo: req.params.orderNo,
+      OR: [{ userId: req.userId }, { assigneeId: req.userId }],
+    },
+    include: {
+      product: { select: { id: true, name: true, thumbnail: true } },
+      assignee: { select: { id: true, nickname: true, avatar: true } },
+      complaint: true,
+    },
+  })
+  if (!order) return fail(res, '订单不存在', 404)
+  return success(res, serializeOrder(order))
+}
+
+module.exports = { createOrder, listOrders, getOrder, getOrderByNo, deliverOrder, reviewOrder, complainOrder, mockPayOrder, getOrderCounts, listMyTasks, closeOrder }
 
 
 

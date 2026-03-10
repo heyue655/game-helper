@@ -34,7 +34,7 @@ services:
     container_name: game-helper-h5
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "5000:80"
     depends_on:
       - backend
 
@@ -48,6 +48,6 @@ services:
     container_name: game-helper-admin
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "5088:80"
     depends_on:
       - backend

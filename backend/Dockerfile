@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:20.18.0-alpine
 
 # 安装必要的系统依赖（Prisma 需要 openssl）
 RUN apk add --no-cache openssl
