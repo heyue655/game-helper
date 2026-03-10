@@ -1,5 +1,8 @@
 # ── Stage 1: 构建 ─────────────────────────────────────────
-FROM node:20.18.0-alpine AS builder
+FROM docker.das-security.cn/node:22-alpine AS builder
+
+# 配置 apk 阿里云镜像加速
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 WORKDIR /app
 

@@ -1,4 +1,7 @@
-FROM node:20.18.0-alpine
+FROM node:docker.das-security.cn/node:22-alpine
+
+# 配置 apk 阿里云镜像加速
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 # 安装必要的系统依赖（Prisma 需要 openssl）
 RUN apk add --no-cache openssl
