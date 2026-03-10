@@ -299,6 +299,15 @@ router.patch('/users/:id/blacklist', authAdmin, async (req, res) => {
   return success(res, null, blacklisted ? '已拉黑' : '已解除拉黑')
 })
 
+router.patch('/users/:id/builtin', authAdmin, async (req, res) => {
+  const { builtin } = req.body
+  await prisma.user.update({
+    where: { id: BigInt(req.params.id) },
+    data: { isBuiltin: !!builtin },
+  })
+  return success(res, null, builtin ? '已设为打手' : '已取消打手身份')
+})
+
 // ── 系统管理 ──────────────────────────────────────────────────────────────
 // 获取管理员列表（超级管理员）
 router.get('/admins', authSuper, async (req, res) => {

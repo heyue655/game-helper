@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Popconfirm, Tag, Typography, Input, message, Avatar } from 'antd'
+import { Table, Button, Popconfirm, Tag, Typography, Input, message, Avatar, Space } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
-import { getAdminUsers, setBlacklist } from '../api'
+import { getAdminUsers, setBlacklist, setBuiltin } from '../api'
 import dayjs from 'dayjs'
 
 const GENDER_LABEL = { 0: '未知', 1: '男', 2: '女' }
@@ -15,7 +15,9 @@ export default function UsersPage() {
 
   function fetchUsers(p = page) {
     setLoading(true)
-    getAdminUsers({ page: p, pageSize: 20, keyword }).then((r) => { setUsers(r.data?.items || []); setTotal(r.data?.total || 0) }).finally(() => setLoading(false))
+    getAdminUsers({ page: p, pageSize: 20, keyword })
+      .then((r) => { setUsers(r.data?.items || []); setTotal(r.data?.total || 0) })
+      .finally(() => setLoading(false))
   }
   useEffect(() => { fetchUsers() }, [page, keyword])
 
@@ -26,16 +28,62 @@ export default function UsersPage() {
     { title: '性别', dataIndex: 'gender', width: 70, render: (v) => GENDER_LABEL[v] || '未知' },
     { title: '年龄', dataIndex: 'age', width: 60, render: (v) => v || '-' },
     { title: '游戏', dataIndex: 'game', width: 100, render: (v) => v || '-' },
-    { title: '内置玩家', dataIndex: 'isBuiltin', width: 90, render: (v) => v ? <Tag color="blue">是</Tag> : '-' },
-    { title: '状态', dataIndex: 'isBlacklisted', width: 80, render: (v) => v ? <Tag color="red">已拉黑</Tag> : <Tag color="green">正常</Tag> },
+    {
+      title: '内置玩家', dataIndex: 'isBuiltin', width: 90,
+      render: (v) => v ? <Tag color="blue">打手</Tag> : '-',
+    },
+    {
+      title: '状态', dataIndex: 'isBlacklisted', width: 80,
+      render: (v) => v ? <Tag color="red">已拉黑</Tag> : <Tag color="green">正常</Tag>,
+    },
     { title: '注册时间', dataIndex: 'createdAt', width: 120, render: (v) => dayjs(v).format('MM-DD HH:mm') },
     {
-      title: '操作', width: 100,
+      title: '操作', width: 180,
       render: (_, r) => (
-        <Popconfirm title={r.isBlacklisted ? '确认解除拉黑？' : '确认拉黑该用户？'}
-          onConfirm={async () => { await setBlacklist(r.id, !r.isBlacklisted); message.success(r.isBlacklisted ? '已解除' : '已拉黑'); fetchUsers() }}>
-          <Button size="small" danger={!r.isBlacklisted}>{r.isBlacklisted ? '解除拉黑' : '拉黑'}</Button>
-        </Popconfirm>
+        <Space size={4}>
+          {!r.isBuiltin && (
+            <Popconfirm
+              title={'设为打手'}
+              description={`确认将「${r.nickname}」设为内置打手？设置后可在分配订单时选择。`}
+              okText="确认设置"
+              cancelText="取消"
+              onConfirm={async () => {
+                await setBuiltin(r.id, true)
+                message.success('已设为打手')
+                fetchUsers()
+              }}
+            >
+              <Button size="small" type="primary" ghost>设为打手</Button>
+            </Popconfirm>
+          )}
+          {r.isBuiltin && (
+            <Popconfirm
+              title={'取消打手'}
+              description={`确认取消「${r.nickname}」的打手身份？`}
+              okText="确认取消"
+              cancelText="保留"
+              onConfirm={async () => {
+                await setBuiltin(r.id, false)
+                message.success('已取消打手身份')
+                fetchUsers()
+              }}
+            >
+              <Button size="small">取消打手</Button>
+            </Popconfirm>
+          )}
+          <Popconfirm
+            title={r.isBlacklisted ? '确认解除拉黑？' : '确认拉黑该用户？'}
+            onConfirm={async () => {
+              await setBlacklist(r.id, !r.isBlacklisted)
+              message.success(r.isBlacklisted ? '已解除' : '已拉黑')
+              fetchUsers()
+            }}
+          >
+            <Button size="small" danger={!r.isBlacklisted}>
+              {r.isBlacklisted ? '解除拉黑' : '拉黑'}
+            </Button>
+          </Popconfirm>
+        </Space>
       ),
     },
   ]
@@ -44,9 +92,21 @@ export default function UsersPage() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, alignItems: 'center' }}>
         <Typography.Title level={4} style={{ margin: 0 }}>玩家管理</Typography.Title>
-        <Input.Search placeholder="搜索昵称/手机号" onSearch={(v) => { setKeyword(v); setPage(1) }} allowClear style={{ width: 220 }} />
+        <Input.Search
+          placeholder="搜索昵称/手机号"
+          onSearch={(v) => { setKeyword(v); setPage(1) }}
+          allowClear
+          style={{ width: 220 }}
+        />
       </div>
-      <Table dataSource={users} columns={columns} rowKey="id" loading={loading} pagination={{ current: page, total, pageSize: 20, onChange: (p) => setPage(p) }} scroll={{ x: 800 }} />
+      <Table
+        dataSource={users}
+        columns={columns}
+        rowKey="id"
+        loading={loading}
+        pagination={{ current: page, total, pageSize: 20, onChange: (p) => setPage(p) }}
+        scroll={{ x: 900 }}
+      />
     </div>
   )
 }

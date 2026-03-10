@@ -22,6 +22,7 @@ export const settleOrder = (id) => request.post(`/admin/orders/${id}/settle`)
 // 玩家管理
 export const getAdminUsers = (params) => request.get('/admin/users', { params })
 export const setBlacklist = (id, blacklisted) => request.patch(`/admin/users/${id}/blacklist`, { blacklisted })
+export const setBuiltin = (id, builtin) => request.patch(`/admin/users/${id}/builtin`, { builtin })
 
 // 系统管理
 export const getAdmins = () => request.get('/admin/admins')
