@@ -13,7 +13,7 @@ import {
   TagsOutlined,
 } from '@ant-design/icons'
 import useAdminStore from '../store/auth'
-import logoSrc from '../assets/logo.svg'
+import LogoIcon from '../assets/LogoIcon'
 
 const { Sider, Header, Content } = Layout
 
@@ -40,7 +40,7 @@ export default function AdminLayout() {
     <Layout style={{ minHeight: '100vh', background: 'transparent', padding: 16, gap: 16 }}>
       <Sider width={220} theme="light" style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.82)', borderRadius: 24, overflow: 'hidden', boxShadow: '0 14px 40px rgba(99,102,241,0.10)', backdropFilter: 'blur(18px)' }}>
         <div style={{ padding: '18px 14px', textAlign: 'center', borderBottom: '1px solid rgba(148,163,184,0.16)' }}>
-          <img src={logoSrc} alt="和悦网游" style={{ width: 52, height: 52, marginBottom: 8 }} />
+          <LogoIcon size={52} style={{ marginBottom: 8 }} />
           <Typography.Text strong style={{ color: '#4338ca', fontSize: 18, display: 'block' }}>和悦网游</Typography.Text>
         </div>
         <Menu
