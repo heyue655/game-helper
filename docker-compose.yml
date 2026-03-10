@@ -1,0 +1,53 @@
+version: '3.8'
+
+# 外部 MySQL 和 Redis 均在云服务器上，无需容器化
+# 启动命令: docker-compose up -d --build
+
+services:
+  # ── 后端 API ──────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: game-helper-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # ── H5 用户端 ──────────────────────────────────────────────
+  h5:
+    build:
+      context: ./h5
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE=/api
+    container_name: game-helper-h5
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  # ── 后台管理系统 ────────────────────────────────────────────
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE=/api
+    container_name: game-helper-admin
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend

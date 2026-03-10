@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="420" fill="url(#g)"/>
+  <circle cx="1050" cy="110" r="130" fill="#fff" opacity="0.14"/>
+  <circle cx="170" cy="330" r="150" fill="#fff" opacity="0.1"/>
+  <text x="72" y="150" fill="#fff" font-size="60" font-family="Arial, sans-serif" font-weight="700">League of Legends</text>
+  <text x="72" y="228" fill="#fff" font-size="38" font-family="Arial, sans-serif" opacity="0.95">HEYUE GAME - LoL Rank Sprint</text>
+  <text x="72" y="298" fill="#fff" font-size="28" font-family="Arial, sans-serif" opacity="0.88">Duo Queue - Coaching - Rank Boost</text>
+</svg>

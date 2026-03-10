@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="420" fill="url(#g)"/>
+  <circle cx="1020" cy="90" r="140" fill="#fff" opacity="0.16"/>
+  <circle cx="180" cy="360" r="160" fill="#fff" opacity="0.1"/>
+  <text x="72" y="150" fill="#fff" font-size="60" font-family="Arial, sans-serif" font-weight="700">Honor of Kings</text>
+  <text x="72" y="228" fill="#fff" font-size="38" font-family="Arial, sans-serif" opacity="0.95">HEYUE GAME - Elite Boost Service</text>
+  <text x="72" y="298" fill="#fff" font-size="28" font-family="Arial, sans-serif" opacity="0.88">Fast Match - Safe Order - 24h Support</text>
+</svg>

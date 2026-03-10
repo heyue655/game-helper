@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  phone          String    @unique @db.VarChar(20)
+  nickname       String    @default("") @db.VarChar(50)
+  avatar         String    @default("") @db.VarChar(500)
+  gender         Int       @default(0) @db.TinyInt
+  age            Int?      @db.UnsignedTinyInt
+  game           String    @default("") @db.VarChar(100)
+  isBuiltin      Boolean   @default(false) @map("is_builtin")
+  isBlacklisted  Boolean   @default(false) @map("is_blacklisted")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  orders         Order[]   @relation("UserOrders")
+  assignedOrders Order[]   @relation("AssigneeOrders")
+  complaints     Complaint[]
+  favorites      Favorite[]
+
+  @@map("users")
+}
+
+model Admin {
+  id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  username     String   @unique @db.VarChar(50)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  role         AdminRole @default(ADMIN)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+enum AdminRole {
+  SUPER
+  ADMIN
+}
+
+model Zone {
+  id           Int           @id @default(autoincrement()) @db.UnsignedInt
+  name         String        @db.VarChar(50)
+  icon         String        @default("") @db.VarChar(500)
+  sort         Int           @default(0)
+  createdAt    DateTime      @default(now()) @map("created_at")
+
+  productZones ProductZone[]
+
+  @@map("zones")
+}
+
+model Game {
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  name      String   @unique @db.VarChar(100)
+  sort      Int      @default(0)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("games")
+}
+
+model Product {
+  id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  gameName       String    @map("game_name") @db.VarChar(100)
+  name           String    @db.VarChar(200)
+  description    String?   @db.Text
+  price          Decimal   @db.Decimal(10, 2)
+  originalPrice  Decimal   @map("original_price") @db.Decimal(10, 2)
+  thumbnail      String    @default("") @db.VarChar(500)
+  images         Json?
+  specs          Json?
+  detailContent  String?   @map("detail_content") @db.Text
+  status         ProductStatus @default(OFF)
+  sales          Int       @default(0) @db.UnsignedInt
+  views          Int       @default(0) @db.UnsignedInt
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  productZones   ProductZone[]
+  orders         Order[]
+  favorites      Favorite[]
+
+  @@map("products")
+}
+
+enum ProductStatus {
+  ON
+  OFF
+}
+
+model ProductZone {
+  id        BigInt  @id @default(autoincrement()) @db.UnsignedBigInt
+  productId BigInt  @map("product_id") @db.UnsignedBigInt
+  zoneId    Int     @map("zone_id") @db.UnsignedInt
+
+  product   Product @relation(fields: [productId], references: [id])
+  zone      Zone    @relation(fields: [zoneId], references: [id])
+
+  @@unique([productId, zoneId])
+  @@map("product_zones")
+}
+
+model Banner {
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  imageUrl  String   @map("image_url") @db.VarChar(500)
+  link      String   @default("") @db.VarChar(500)
+  sort      Int      @default(0)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("banners")
+}
+
+model Order {
+  id          BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
+  orderNo     String      @unique @map("order_no") @db.VarChar(32)
+  userId      BigInt      @map("user_id") @db.UnsignedBigInt
+  productId   BigInt      @map("product_id") @db.UnsignedBigInt
+  productName String      @map("product_name") @db.VarChar(200)
+  spec        String      @default("") @db.VarChar(200)
+  price       Decimal     @db.Decimal(10, 2)
+  status      OrderStatus @default(PENDING_PAY)
+  assigneeId  BigInt?     @map("assignee_id") @db.UnsignedBigInt
+  payTime     DateTime?   @map("pay_time")
+  deliverTime DateTime?   @map("deliver_time")
+  completedAt DateTime?   @map("completed_at")
+  isComplained Boolean    @default(false) @map("is_complained")
+  alipayTradeNo String?   @map("alipay_trade_no") @db.VarChar(64)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  user        User        @relation("UserOrders", fields: [userId], references: [id])
+  product     Product     @relation(fields: [productId], references: [id])
+  assignee    User?       @relation("AssigneeOrders", fields: [assigneeId], references: [id])
+  complaint   Complaint?
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING_PAY
+  PENDING_ASSIGN
+  PENDING_DELIVERY
+  PENDING_REVIEW
+  COMPLETED
+  PENDING_SETTLEMENT
+  SETTLED
+  CLOSED
+}
+
+model Complaint {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  orderId   BigInt   @unique @map("order_id") @db.UnsignedBigInt
+  userId    BigInt   @map("user_id") @db.UnsignedBigInt
+  reason    String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("complaints")
+}
+
+model Favorite {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  userId    BigInt   @map("user_id") @db.UnsignedBigInt
+  productId BigInt   @map("product_id") @db.UnsignedBigInt
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@map("favorites")
+}
+
+model PlatformNote {
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  content   String   @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("platform_notes")
+}
