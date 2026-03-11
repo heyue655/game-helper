@@ -37,6 +37,7 @@ export const complainOrder = (id, reason) => request.post(`/orders/${id}/complai
 
 // 我的任务（接单人视角）
 export const getMyTasks = (params) => request.get('/tasks', { params })
+export const getMyEarnings = (params) => request.get('/orders/earnings', { params })
 
 // 收藏
 export const getFavorites = (params) => request.get('/favorites', { params })

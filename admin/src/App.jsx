@@ -10,6 +10,7 @@ import SystemPage from './pages/System'
 import BannersPage from './pages/Banners'
 import GamesPage from './pages/Games'
 import ZonesPage from './pages/Zones'
+import SettlementsPage from './pages/Settlements'
 import useAdminStore from './store/auth'
 
 function PrivateRoute({ children }) {
@@ -42,6 +43,7 @@ export default function App() {
         <Route path="banners" element={<BannersPage />} />
         <Route path="games" element={<GamesPage />} />
         <Route path="zones" element={<ZonesPage />} />
+        <Route path="settlements" element={<SettlementsPage />} />
         <Route path="system" element={<SystemPage />} />
       </Route>
     </Routes>

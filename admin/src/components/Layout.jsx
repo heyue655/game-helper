@@ -2,15 +2,9 @@ import React from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { Layout, Menu, Button, Typography } from 'antd'
 import {
-  DashboardOutlined,
-  ShoppingOutlined,
-  AppstoreOutlined,
-  OrderedListOutlined,
-  TeamOutlined,
-  SettingOutlined,
-  PictureOutlined,
-  LogoutOutlined,
-  TagsOutlined,
+  DashboardOutlined, ShoppingOutlined, AppstoreOutlined, OrderedListOutlined,
+  TeamOutlined, SettingOutlined, PictureOutlined, LogoutOutlined,
+  TagsOutlined, AccountBookOutlined,
 } from '@ant-design/icons'
 import useAdminStore from '../store/auth'
 import LogoIcon from '../assets/LogoIcon'
@@ -18,24 +12,23 @@ import LogoIcon from '../assets/LogoIcon'
 const { Sider, Header, Content } = Layout
 
 const ALL_MENU_ITEMS = [
-  { key: '/dashboard',  icon: React.createElement(DashboardOutlined),  label: '首页看板',    roles: ['SUPER'] },
-  { key: '/orders',     icon: React.createElement(OrderedListOutlined), label: '订单管理',    roles: ['SUPER', 'ADMIN'] },
-  { key: '/products',   icon: React.createElement(ShoppingOutlined),   label: '商品管理',    roles: ['SUPER', 'ADMIN'] },
-  { key: '/users',      icon: React.createElement(TeamOutlined),        label: '玩家管理',    roles: ['SUPER', 'ADMIN'] },
-  { key: '/games',      icon: React.createElement(AppstoreOutlined),    label: '游戏管理',    roles: ['SUPER', 'ADMIN'] },
-  { key: '/zones',      icon: React.createElement(TagsOutlined),        label: '专区管理',    roles: ['SUPER', 'ADMIN'] },
-  { key: '/banners',    icon: React.createElement(PictureOutlined),     label: 'Banner 管理', roles: ['SUPER', 'ADMIN'] },
-  { key: '/system',     icon: React.createElement(SettingOutlined),     label: '系统管理',    roles: ['SUPER'] },
+  { key: '/dashboard', icon: React.createElement(DashboardOutlined), label: '首页看板', roles: ['SUPER'] },
+  { key: '/orders', icon: React.createElement(OrderedListOutlined), label: '订单管理', roles: ['SUPER','ADMIN'] },
+  { key: '/settlements', icon: React.createElement(AccountBookOutlined), label: '结算管理', roles: ['SUPER','ADMIN'] },
+  { key: '/products', icon: React.createElement(ShoppingOutlined), label: '商品管理', roles: ['SUPER','ADMIN'] },
+  { key: '/users', icon: React.createElement(TeamOutlined), label: '玩家管理', roles: ['SUPER','ADMIN'] },
+  { key: '/games', icon: React.createElement(AppstoreOutlined), label: '游戏管理', roles: ['SUPER','ADMIN'] },
+  { key: '/zones', icon: React.createElement(TagsOutlined), label: '专区管理', roles: ['SUPER','ADMIN'] },
+  { key: '/banners', icon: React.createElement(PictureOutlined), label: 'Banner 管理', roles: ['SUPER','ADMIN'] },
+  { key: '/system', icon: React.createElement(SettingOutlined), label: '系统管理', roles: ['SUPER'] },
 ]
 
 export default function AdminLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const { admin, logout } = useAdminStore()
-
   const role = admin?.role || 'ADMIN'
   const menuItems = ALL_MENU_ITEMS.filter((item) => item.roles.includes(role))
-
   return (
     <Layout style={{ minHeight: '100vh', background: 'transparent', padding: 16, gap: 16 }}>
       <Sider width={220} theme="light" style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.82)', borderRadius: 24, overflow: 'hidden', boxShadow: '0 14px 40px rgba(99,102,241,0.10)', backdropFilter: 'blur(18px)' }}>
@@ -43,13 +36,7 @@ export default function AdminLayout() {
           <LogoIcon size={52} style={{ marginBottom: 8 }} />
           <Typography.Text strong style={{ color: '#4338ca', fontSize: 18, display: 'block' }}>和悦网游</Typography.Text>
         </div>
-        <Menu
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          items={menuItems}
-          onClick={({ key }) => navigate(key)}
-          style={{ background: 'transparent', borderRight: 'none', padding: 12 }}
-        />
+        <Menu mode="inline" selectedKeys={[location.pathname]} items={menuItems} onClick={({ key }) => navigate(key)} style={{ background: 'transparent', borderRight: 'none', padding: 12 }} />
       </Sider>
       <Layout style={{ background: 'transparent' }}>
         <Header style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.82)', borderRadius: 24, padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 14px 40px rgba(99,102,241,0.08)', backdropFilter: 'blur(18px)' }}>

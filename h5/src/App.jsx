@@ -13,6 +13,7 @@ import ComplaintPage from './pages/Complaint'
 import ProfileEditPage from './pages/ProfileEdit'
 import PayPage from './pages/Pay'
 import PayResultPage from './pages/PayResult'
+import EarningsPage from './pages/Earnings'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/pay/:id" element={<PayPage />} />
       <Route path="/pay/result" element={<PayResultPage />} />
+      <Route path="/earnings" element={<EarningsPage />} />
       <Route path="/orders" element={<OrderListPage />} />
       <Route path="/orders/:id" element={<OrderDetailPage />} />
       <Route path="/my-tasks" element={<MyTasksPage />} />

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageLayout from '../components/PageLayout'
 import useAuthStore from '../store/auth'
@@ -44,8 +44,14 @@ export default function MyPage() {
         <div className="absolute -top-10 -right-8 w-40 h-40 rounded-full bg-indigo-300/25 blur-3xl" />
         <div className="absolute -bottom-8 -left-8 w-40 h-40 rounded-full bg-pink-300/20 blur-3xl" />
         <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
-          <div className="w-16 h-16 rounded-full bg-dark-surface border border-white/70 overflow-hidden cursor-pointer shadow-sm" onClick={() => (token ? navigate('/profile/edit') : navigate('/login'))}>
-            {user?.avatar ? <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" /> : <svg viewBox="0 0 24 24" fill="#94a3b8" className="w-full h-full p-2"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" /></svg>}
+          <div
+            className="w-16 h-16 rounded-full bg-dark-surface border border-white/70 overflow-hidden cursor-pointer shadow-sm"
+            onClick={() => (token ? navigate('/profile/edit') : navigate('/login'))}
+          >
+            {user?.avatar
+              ? <img src={user.avatar} alt="avatar" className="w-full h-full object-cover" />
+              : <svg viewBox="0 0 24 24" fill="#94a3b8" className="w-full h-full p-2"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" /></svg>
+            }
           </div>
           {token && user
             ? <p className="text-slate-800 font-semibold mt-3">{user.nickname}</p>
@@ -78,6 +84,7 @@ export default function MyPage() {
         <div className="bg-dark-card rounded-2xl overflow-hidden">
           {[
             { label: '我的任务', to: '/my-tasks', badge: counts.taskPendingDelivery },
+            { label: '我的收益', to: '/earnings', badge: 0 },
             { label: '我的收藏', to: '/favorites', badge: 0 },
             { label: '我的投诉', to: '/orders?tab=COMPLETED', badge: 0 },
             { label: '关于我们', to: '/', badge: 0 },
@@ -89,10 +96,7 @@ export default function MyPage() {
             >
               <span className="text-white text-sm flex-1">{item.label}</span>
               {!!item.badge && (
-                <span
-                  className="min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center text-white font-bold"
-                  style={{ fontSize: 11, background: '#e83030' }}
-                >
+                <span className="min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center text-white font-bold" style={{ fontSize: 11, background: '#e83030' }}>
                   {item.badge > 99 ? '99+' : item.badge}
                 </span>
               )}

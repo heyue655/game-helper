@@ -245,14 +245,72 @@ router.post('/orders/:id/assign', authAdmin, async (req, res) => {
 
 // 交单入口已移除：交单操作仅由 H5 接单人操作，管理后台不提供此功能
 
-// 结算（待结算 -> 已结算）
+// 结算（待结算 -> 已结算），需传入打手收益和平台收益，两者之和必须等于订单金额
 router.post('/orders/:id/settle', authAdmin, async (req, res) => {
+  const { playerAmount, platformAmount } = req.body
+  if (playerAmount == null || platformAmount == null) return fail(res, '请填写收益分配金额')
+
   const order = await prisma.order.findUnique({ where: { id: BigInt(req.params.id) } })
   if (!order) return fail(res, '订单不存在', 404)
   if (order.status !== 'PENDING_SETTLEMENT') return fail(res, '当前订单状态不可结算')
 
-  await prisma.order.update({ where: { id: order.id }, data: { status: 'SETTLED' } })
+  const pa = parseFloat(playerAmount)
+  const pla = parseFloat(platformAmount)
+  const total = parseFloat(order.price)
+  if (Math.abs(pa + pla - total) > 0.001) return fail(res, `分配金额之和（${(pa + pla).toFixed(2)}）必须等于订单金额（${total.toFixed(2)}）`)
+
+  await prisma.order.update({
+    where: { id: order.id },
+    data: {
+      status: 'SETTLED',
+      playerAmount: pa,
+      platformAmount: pla,
+      settledAt: new Date(),
+    },
+  })
   return success(res, null, '结算成功')
+})
+
+// 结算管理列表
+router.get('/settlements', authAdmin, async (req, res) => {
+  const { page = 1, pageSize = 20, keyword } = req.query
+  const skip = (parseInt(page) - 1) * parseInt(pageSize)
+  const where = {
+    status: 'SETTLED',
+    ...(keyword && {
+      OR: [
+        { productName: { contains: keyword } },
+        { orderNo: { contains: keyword } },
+      ],
+    }),
+  }
+  const [total, items] = await Promise.all([
+    prisma.order.count({ where }),
+    prisma.order.findMany({
+      where,
+      skip,
+      take: parseInt(pageSize),
+      orderBy: { settledAt: 'desc' },
+      include: {
+        user: { select: { id: true, nickname: true } },
+        assignee: { select: { id: true, nickname: true } },
+      },
+    }),
+  ])
+  return success(res, {
+    total,
+    items: items.map((o) => ({
+      id: o.id.toString(),
+      orderNo: o.orderNo,
+      productName: o.productName,
+      price: Number(o.price),
+      playerAmount: o.playerAmount != null ? Number(o.playerAmount) : null,
+      platformAmount: o.platformAmount != null ? Number(o.platformAmount) : null,
+      settledAt: o.settledAt,
+      user: o.user ? { id: o.user.id.toString(), nickname: o.user.nickname } : null,
+      assignee: o.assignee ? { id: o.assignee.id.toString(), nickname: o.assignee.nickname } : null,
+    })),
+  })
 })
 
 // ── 玩家管理 ──────────────────────────────────────────────────────────────

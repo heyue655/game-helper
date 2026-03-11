@@ -17,7 +17,8 @@ export const deleteProduct = (id) => request.delete(`/admin/products/${id}`)
 export const getAdminOrders = (params) => request.get('/admin/orders', { params })
 export const assignOrder = (id, assigneeId) => request.post(`/admin/orders/${id}/assign`, { assigneeId })
 export const deliverOrder = (id) => request.post(`/admin/orders/${id}/deliver`)
-export const settleOrder = (id) => request.post(`/admin/orders/${id}/settle`)
+export const settleOrder = (id, data) => request.post(`/admin/orders/${id}/settle`, data)
+export const getAdminSettlements = (params) => request.get('/admin/settlements', { params })
 
 // 玩家管理
 export const getAdminUsers = (params) => request.get('/admin/users', { params })

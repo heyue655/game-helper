@@ -267,7 +267,39 @@ async function getOrderByNo(req, res) {
   return success(res, serializeOrder(order))
 }
 
-module.exports = { createOrder, listOrders, getOrder, getOrderByNo, deliverOrder, reviewOrder, complainOrder, mockPayOrder, getOrderCounts, listMyTasks, closeOrder }
+// 打手收益列表（H5 接单人查看自己的结算收益）
+async function getMyEarnings(req, res) {
+  const { page = 1, pageSize = 20 } = req.query
+  const skip = (parseInt(page) - 1) * parseInt(pageSize)
+  const where = { assigneeId: req.userId, status: 'SETTLED' }
+
+  const [total, items, agg] = await Promise.all([
+    prisma.order.count({ where }),
+    prisma.order.findMany({
+      where,
+      skip,
+      take: parseInt(pageSize),
+      orderBy: { settledAt: 'desc' },
+      include: { user: { select: { nickname: true } } },
+    }),
+    prisma.order.aggregate({ where, _sum: { playerAmount: true } }),
+  ])
+
+  return success(res, {
+    totalEarnings: Number(agg._sum.playerAmount || 0),
+    total,
+    items: items.map((o) => ({
+      id: o.id.toString(),
+      orderNo: o.orderNo,
+      productName: o.productName,
+      playerAmount: o.playerAmount != null ? Number(o.playerAmount) : null,
+      settledAt: o.settledAt,
+      user: o.user ? { nickname: o.user.nickname } : null,
+    })),
+  })
+}
+
+module.exports = { createOrder, listOrders, getOrder, getOrderByNo, deliverOrder, reviewOrder, complainOrder, mockPayOrder, getOrderCounts, listMyTasks, closeOrder, getMyEarnings }
 
 
 
