@@ -43,8 +43,8 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-4">
           <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="请输入手机号" maxLength={11} className="w-full bg-dark-surface text-white rounded-2xl px-4 py-3 outline-none text-sm placeholder:text-slate-400" />
           <div className="flex gap-2">
-            <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="请输入验证码" maxLength={6} className="flex-1 bg-dark-surface text-white rounded-2xl px-4 py-3 outline-none text-sm placeholder:text-slate-400" />
-            <button type="button" onClick={handleSendCode} disabled={countdown > 0} className="whitespace-nowrap bg-primary text-white rounded-2xl px-4 py-3 text-sm disabled:bg-slate-400 disabled:cursor-not-allowed">{countdown > 0 ? `${countdown}s` : '获取验证码'}</button>
+            <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="请输入验证码" maxLength={6} className="flex-1 min-w-0 bg-dark-surface text-white rounded-2xl px-4 py-3 outline-none text-sm placeholder:text-slate-400" />
+            <button type="button" onClick={handleSendCode} disabled={countdown > 0} className="flex-shrink-0 bg-primary text-white rounded-2xl px-3 py-3 text-xs disabled:bg-slate-400 disabled:cursor-not-allowed">{countdown > 0 ? `${countdown}s` : '获取验证码'}</button>
           </div>
           {error && <p className="text-red-500 text-xs">{error}</p>}
           <button type="submit" disabled={loading} className="w-full bg-primary text-white rounded-2xl py-3 font-bold text-base disabled:opacity-60">{loading ? '登录中...' : '登录'}</button>

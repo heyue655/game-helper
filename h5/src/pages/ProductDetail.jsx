@@ -103,7 +103,7 @@ export default function ProductDetailPage() {
           </div>
         )}
       </div>
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-dark border-t border-dark-border px-4 py-3 pb-safe flex gap-3">
+      <div className="fixed bottom-0 left-0 right-0 bg-dark border-t border-dark-border px-4 py-3 flex gap-3 safe-area-bottom">
         <a href="tel:400000000" className="flex-shrink-0 bg-dark-surface text-white rounded-xl px-5 py-3 text-sm flex items-center gap-2">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" /></svg>
           联系客服

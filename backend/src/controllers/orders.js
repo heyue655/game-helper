@@ -65,11 +65,15 @@ async function createOrder(req, res) {
 
   let payUrl = null
   try {
-    payUrl = await createWapPay({
+    const totalAmount = Number(product.price).toFixed(2)
+    console.log('[Alipay] Creating pay, orderNo:', orderNo, 'subject:', product.name, 'totalAmount:', totalAmount)
+    
+    payUrl = createWapPay({
       orderNo,
       subject: product.name,
-      totalAmount: Number(product.price).toFixed(2),
+      totalAmount: totalAmount,
     })
+    console.log('[Alipay] payUrl generated, full URL:', payUrl)
   } catch (err) {
     console.error('[Alipay createWapPay error]', err.message)
   }

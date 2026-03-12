@@ -19,12 +19,19 @@ async function sendCode(req, res) {
   const locked = await redis.get(lockKey)
   if (locked) return fail(res, '发送太频繁，请60秒后再试')
 
-  // TODO: 对接阿里云SMS后移除固定验证码
-  const code = '123456'
-  await redis.setex(`sms:code:${phone}`, CODE_TTL, code)
-  await redis.setex(lockKey, 60, '1')
-
-  return success(res, null, '验证码已发送（当前固定为 123456）')
+  const code = String(Math.floor(100000 + Math.random() * 900000))
+  
+  try {
+    console.log('[SMS] 发送验证码, phone:', phone, 'code:', code)
+    await sendVerifyCode(phone, code)
+    console.log('[SMS] 发送成功, phone:', phone)
+    await redis.setex(`sms:code:${phone}`, CODE_TTL, code)
+    await redis.setex(lockKey, 60, '1')
+    return success(res, null, '验证码已发送')
+  } catch (err) {
+    console.error('[SMS] 发送失败:', err.message, err.data || '')
+    return fail(res, '验证码发送失败，请稍后重试')
+  }
 }
 
 // POST /api/auth/login

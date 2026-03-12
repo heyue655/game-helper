@@ -44,6 +44,10 @@ html, body, #root {
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
+.safe-area-bottom {
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+}
+
 .bg-dark,
 .bg-dark\/90 {
   background: rgba(248, 250, 252, 0.78) !important;

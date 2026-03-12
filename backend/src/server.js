@@ -1,3 +1,4 @@
+process.env.TZ = 'Asia/Shanghai'
 require('dotenv').config()
 const app = require('./app')
 const { PrismaClient } = require('@prisma/client')
