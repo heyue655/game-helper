@@ -25,7 +25,7 @@ export default function BannersPage() {
   }
 
   async function handleUploadBanner(file) {
-    if (!validateImage(file, 2)) return false
+    if (!validateImage(file, 5)) return false
     try {
       setUploadingBanner(true)
       const res = await uploadFile(file, 'banners')
@@ -169,7 +169,7 @@ export default function BannersPage() {
           <Form.Item label="Banner 图片" required>
             <Space direction="vertical" style={{ width: '100%' }}>
               <Typography.Text type="secondary">
-                图片要求：建议 1200x420，支持 JPG/PNG/WebP/SVG，大小不超过 2MB
+                图片要求：建议 1200x420，支持 JPG/PNG/WebP/SVG，大小不超过 5MB
               </Typography.Text>
               <Space align="start">
                 <Upload

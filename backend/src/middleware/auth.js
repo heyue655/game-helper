@@ -10,7 +10,7 @@ function authUser(req, res, next) {
     req.userId = BigInt(payload.id)
     next()
   } catch {
-    fail(res, 'token 已过期，请重新登录', 401)
+    return fail(res, 'token 已过期，请重新登录', 401)
   }
 }
 
@@ -24,7 +24,7 @@ function authAdmin(req, res, next) {
     req.adminRole = payload.role
     next()
   } catch {
-    fail(res, 'token 已过期，请重新登录', 401)
+    return fail(res, 'token 已过期，请重新登录', 401)
   }
 }
 

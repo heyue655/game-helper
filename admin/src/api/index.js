@@ -60,5 +60,5 @@ export const updatePlatformNote = (content) => request.put('/admin/platform-note
 export const uploadFile = (file, folder = 'products') => {
   const form = new FormData()
   form.append('file', file)
-  return request.post(`/upload?folder=${folder}`, form, { headers: { 'Content-Type': 'multipart/form-data' } })
+  return request.post(`/upload?folder=${folder}`, form)
 }

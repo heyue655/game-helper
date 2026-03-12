@@ -8,7 +8,7 @@ export const updateProfile = (data) => request.put('/auth/profile', data)
 export const uploadAvatar = (file) => {
   const form = new FormData()
   form.append('file', file)
-  return request.post('/upload/avatar', form, { headers: { 'Content-Type': 'multipart/form-data' } })
+  return request.post('/upload/avatar', form)
 }
 
 // 商品

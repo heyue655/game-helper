@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination } from 'swiper/modules'
@@ -10,8 +10,8 @@ import { getBanners, getZones, getProducts, getGames } from '../api'
 function SectionTitle({ children }) {
   return (
     <div className="flex items-center gap-2 mb-3">
-      <div className="w-0.5 h-4 rounded-full" style={{ background: 'linear-gradient(to bottom, #6366f1, #a855f7)' }} />
-      <span className="text-slate-800 text-sm font-semibold tracking-wide">{children}</span>
+      <div className="w-0.5 h-4 rounded-full bg-primary" />
+      <span className="text-gray-200 text-sm font-semibold tracking-wide">{children}</span>
     </div>
   )
 }
@@ -22,30 +22,30 @@ function GlassProductCard({ product, onClick }) {
       onClick={onClick}
       className="rounded-2xl overflow-hidden cursor-pointer active:scale-95 transition-transform duration-150"
       style={{
-        background: 'rgba(255,255,255,0.55)',
+        background: 'rgba(40,40,48,0.95)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255,255,255,0.8)',
-        boxShadow: '0 4px 20px rgba(99,102,241,0.1), inset 0 1px 0 rgba(255,255,255,0.9)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
       }}
     >
-      <div className="aspect-square overflow-hidden" style={{ background: 'rgba(241,245,249,0.8)' }}>
+      <div className="aspect-square overflow-hidden bg-neutral-700">
         {product.thumbnail ? (
           <img src={product.thumbnail} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10 text-slate-300">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10 text-neutral-500">
               <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
             </svg>
           </div>
         )}
       </div>
       <div className="p-2.5">
-        <p className="text-slate-800 text-sm font-medium line-clamp-2 leading-tight mb-1.5">{product.name}</p>
-        <p className="text-slate-400 text-xs mb-1.5">售 {product.sales}  浏览 {product.views}</p>
+        <p className="text-gray-100 text-sm font-medium line-clamp-2 leading-tight mb-1.5">{product.name}</p>
+        <p className="text-gray-400 text-xs mb-1.5">售 {product.sales}  浏览 {product.views}</p>
         <div className="flex items-center gap-1.5">
           <span className="text-primary font-bold text-sm">&yen;{Number(product.price).toFixed(2)}</span>
-          <span className="text-slate-300 text-xs line-through">&yen;{Number(product.originalPrice).toFixed(2)}</span>
+          <span className="text-gray-500 text-xs line-through">&yen;{Number(product.originalPrice).toFixed(2)}</span>
         </div>
       </div>
     </div>
@@ -114,19 +114,19 @@ export default function HomePage() {
 
   return (
     <PageLayout>
-      {/* 背景渐变光晕 */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0, background: 'linear-gradient(145deg, #f0f4ff 0%, #fdf4ff 55%, #f0f9fe 100%)' }}>
+      {/* 背景渐变 - 深色 */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0, background: 'linear-gradient(180deg, #0a0a0f 0%, #121218 50%, #0d0d12 100%)' }}>
         <div
           className="absolute rounded-full"
-          style={{ top: '-5%', right: '-5%', width: 320, height: 320, background: 'radial-gradient(circle, rgba(167,139,250,0.35) 0%, transparent 70%)', filter: 'blur(40px)' }}
+          style={{ top: '-10%', right: '-10%', width: 350, height: 350, background: 'radial-gradient(circle, rgba(232,48,48,0.12) 0%, transparent 70%)', filter: 'blur(60px)' }}
         />
         <div
           className="absolute rounded-full"
-          style={{ top: '45%', left: '-8%', width: 280, height: 280, background: 'radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%)', filter: 'blur(40px)' }}
+          style={{ top: '35%', left: '-15%', width: 300, height: 300, background: 'radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)', filter: 'blur(60px)' }}
         />
         <div
           className="absolute rounded-full"
-          style={{ bottom: '8%', right: '5%', width: 240, height: 240, background: 'radial-gradient(circle, rgba(244,114,182,0.2) 0%, transparent 70%)', filter: 'blur(40px)' }}
+          style={{ bottom: '5%', right: '-5%', width: 280, height: 280, background: 'radial-gradient(circle, rgba(167,139,250,0.06) 0%, transparent 70%)', filter: 'blur(60px)' }}
         />
       </div>
 
@@ -134,15 +134,15 @@ export default function HomePage() {
       <div
         className="sticky top-0 z-20 px-4 pt-3 pb-2.5"
         style={{
-          background: 'rgba(248,250,252,0.75)',
+          background: 'rgba(10,10,15,0.85)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(148,163,184,0.2)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}
       >
         <div className="flex gap-2">
           <div className="flex-1 relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                 <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
               </svg>
@@ -152,8 +152,8 @@ export default function HomePage() {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="搜索游戏、段位、降星..."
-              className="w-full text-sm text-slate-700 placeholder-slate-400 rounded-full py-2 pl-9 pr-3 outline-none transition-colors duration-200"
-              style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(148,163,184,0.3)' }}
+              className="w-full text-sm text-white placeholder-neutral-500 rounded-full py-2 pl-9 pr-3 outline-none transition-colors duration-200"
+              style={{ background: 'rgba(30,30,35,0.9)', border: '1px solid rgba(255,255,255,0.08)' }}
             />
           </div>
           <BottomSheetPicker
@@ -161,8 +161,8 @@ export default function HomePage() {
             onChange={setGameFilter}
             options={gameOptions}
             title="选择游戏"
-            className="text-sm text-slate-600 rounded-full px-3 py-2 flex-shrink-0"
-            style={{ background: 'rgba(255,255,255,0.7)', border: '1px solid rgba(148,163,184,0.3)' }}
+            className="text-sm text-neutral-300 rounded-full px-3 py-2 flex-shrink-0"
+            style={{ background: 'rgba(30,30,35,0.9)', border: '1px solid rgba(255,255,255,0.08)' }}
           />
         </div>
       </div>
@@ -173,7 +173,7 @@ export default function HomePage() {
           <div className="mx-3 mt-3">
             <div
               className="rounded-2xl overflow-hidden"
-              style={{ boxShadow: '0 8px 32px rgba(99,102,241,0.15)', border: '1px solid rgba(255,255,255,0.8)' }}
+              style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}
             >
               <Swiper
                 modules={[Autoplay, Pagination]}
@@ -204,11 +204,11 @@ export default function HomePage() {
                   className="flex-shrink-0 rounded-xl overflow-hidden cursor-pointer active:scale-95 transition-transform duration-150"
                   style={{
                     width: 80, height: 56,
-                    background: 'rgba(255,255,255,0.6)',
+                    background: 'rgba(45,45,55,0.9)',
                     backdropFilter: 'blur(12px)',
                     WebkitBackdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255,255,255,0.9)',
-                    boxShadow: '0 2px 12px rgba(99,102,241,0.1)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
                   }}
                 >
                   {z.icon ? (
@@ -216,9 +216,9 @@ export default function HomePage() {
                   ) : (
                     <div
                       className="w-full h-full flex items-center justify-center"
-                      style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(167,139,250,0.1) 100%)' }}
+                      style={{ background: 'linear-gradient(135deg, rgba(232,48,48,0.25) 0%, rgba(99,102,241,0.2) 100%)' }}
                     >
-                      <span className="text-slate-700 text-xs font-bold text-center px-1 leading-tight">{z.name}</span>
+                      <span className="text-gray-100 text-xs font-bold text-center px-1 leading-tight">{z.name}</span>
                     </div>
                   )}
                 </div>
@@ -236,7 +236,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div ref={loaderRef} className="py-5 text-center text-slate-400 text-sm">
+          <div ref={loaderRef} className="py-5 text-center text-gray-400 text-sm">
             {loading ? (
               <span className="inline-flex items-center gap-1.5">
                 <svg className="animate-spin w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
@@ -247,9 +247,9 @@ export default function HomePage() {
               </span>
             ) : !hasMore && products.length > 0 ? (
               <span className="inline-flex items-center gap-2">
-                <span className="w-10 h-px bg-slate-300" />
+                <span className="w-10 h-px bg-gray-600" />
                 没有更多了
-                <span className="w-10 h-px bg-slate-300" />
+                <span className="w-10 h-px bg-gray-600" />
               </span>
             ) : null}
           </div>

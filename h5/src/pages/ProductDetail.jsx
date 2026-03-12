@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Pagination } from 'swiper/modules'
 import { getProduct, getPlatformNote, toggleFavorite, checkFavorite, createOrder } from '../api'
 import useAuthStore from '../store/auth'
+import { sanitizeHtml } from '../utils/sanitize'
 
 export default function ProductDetailPage() {
   const { id } = useParams()
@@ -93,13 +94,13 @@ export default function ProductDetailPage() {
         {product.detailContent && (
           <div className="bg-dark-card rounded-xl p-4">
             <h3 className="text-white font-medium mb-3">商品详情</h3>
-            <div className="text-gray-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: product.detailContent }} />
+            <div className="text-gray-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.detailContent) }} />
           </div>
         )}
         {platformNote && (
           <div className="bg-dark-card rounded-xl p-4">
             <h3 className="text-white font-medium mb-3">平台说明</h3>
-            <div className="text-gray-400 text-xs leading-relaxed" dangerouslySetInnerHTML={{ __html: platformNote }} />
+            <div className="text-gray-400 text-xs leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitizeHtml(platformNote) }} />
           </div>
         )}
       </div>
