@@ -41,15 +41,15 @@ export default function ProductDetailPage() {
     finally { setBuying(false) }
   }
 
-  if (loading) return <div className="min-h-screen bg-dark flex items-center justify-center text-gray-400">加载中...</div>
-  if (!product) return <div className="min-h-screen bg-dark flex items-center justify-center text-gray-400">商品不存在</div>
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-400" style={{ background: '#0a0a0f' }}>加载中...</div>
+  if (!product) return <div className="min-h-screen flex items-center justify-center text-gray-400" style={{ background: '#0a0a0f' }}>商品不存在</div>
 
   const images = product.images?.length > 0 ? product.images : product.thumbnail ? [product.thumbnail] : []
   const specs = product.specs || []
 
   return (
-    <div className="min-h-screen bg-dark pb-20">
-      <div className="sticky top-0 z-10 bg-dark/90 backdrop-blur flex items-center px-4 h-12">
+    <div className="min-h-screen pb-20" style={{ background: '#0a0a0f' }}>
+      <div className="sticky top-0 z-10 flex items-center px-4 h-12" style={{ background: 'rgba(10,10,15,0.9)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <button onClick={() => navigate(-1)} className="text-white p-1 -ml-1">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" /></svg>
         </button>
@@ -61,7 +61,7 @@ export default function ProductDetailPage() {
         </Swiper>
       )}
       <div className="space-y-3 px-4 mt-3">
-        <div className="bg-dark-card rounded-xl p-4">
+        <div className="rounded-xl p-4" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)' }}>
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
               <h1 className="text-white font-bold text-lg leading-tight">{product.name}</h1>
@@ -80,32 +80,32 @@ export default function ProductDetailPage() {
           </div>
         </div>
         {specs.length > 0 && (
-          <div className="bg-dark-card rounded-xl p-4">
+          <div className="rounded-xl p-4" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <h3 className="text-white font-medium mb-3">规格</h3>
             <div className="flex flex-wrap gap-2">
               {specs.map((spec, i) => {
                 const val = typeof spec === 'string' ? spec : spec.value || spec.name
                 return <button key={i} onClick={() => setSelectedSpec(val)}
-                  className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${selectedSpec === val ? 'border-primary text-primary bg-primary/10' : 'border-dark-border text-gray-400'}`}>{val}</button>
+                  className={`px-3 py-1.5 rounded-lg text-sm border transition-colors ${selectedSpec === val ? 'border-primary text-primary' : 'border-dark-border text-gray-400'}`}>{val}</button>
               })}
             </div>
           </div>
         )}
         {product.detailContent && (
-          <div className="bg-dark-card rounded-xl p-4">
+          <div className="rounded-xl p-4" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <h3 className="text-white font-medium mb-3">商品详情</h3>
             <div className="text-gray-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitizeHtml(product.detailContent) }} />
           </div>
         )}
         {platformNote && (
-          <div className="bg-dark-card rounded-xl p-4">
+          <div className="rounded-xl p-4" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <h3 className="text-white font-medium mb-3">平台说明</h3>
             <div className="text-gray-400 text-xs leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitizeHtml(platformNote) }} />
           </div>
         )}
       </div>
-      <div className="fixed bottom-0 left-0 right-0 bg-dark border-t border-dark-border px-4 py-3 flex gap-3 safe-area-bottom">
-        <a href="tel:400000000" className="flex-shrink-0 bg-dark-surface text-white rounded-xl px-5 py-3 text-sm flex items-center gap-2">
+      <div className="fixed bottom-0 left-0 right-0 px-4 py-3 flex gap-3 safe-area-bottom" style={{ background: '#0a0a0f', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <a href="tel:400000000" className="flex-shrink-0 rounded-xl px-5 py-3 text-sm flex items-center gap-2 text-white" style={{ background: 'rgba(45,45,55,0.9)' }}>
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z" /></svg>
           联系客服
         </a>

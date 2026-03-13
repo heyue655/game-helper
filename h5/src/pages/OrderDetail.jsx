@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { getOrder, deliverOrder, closeOrder } from '../api'
 import useAuthStore from '../store/auth'
@@ -23,23 +23,23 @@ function useCountdown(targetMs) {
 function ConfirmSheet({ open, title, desc, confirmLabel, onConfirm, onCancel, danger }) {
   if (!open) return null
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end" style={{ background: 'rgba(0,0,0,0.4)' }} onClick={onCancel}>
-      <div className="bg-white rounded-t-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex flex-col justify-end" style={{ background: 'rgba(0,0,0,0.6)' }} onClick={onCancel}>
+      <div className="rounded-t-2xl overflow-hidden" onClick={(e) => e.stopPropagation()} style={{ background: '#1a1a1f' }}>
         <div className="px-6 pt-5 pb-3 text-center">
-          <p className="text-slate-800 font-semibold text-base">{title}</p>
-          {desc && <p className="text-slate-400 text-sm mt-1">{desc}</p>}
+          <p className="text-gray-100 font-semibold text-base">{title}</p>
+          {desc && <p className="text-gray-400 text-sm mt-1">{desc}</p>}
         </div>
-        <div style={{ borderTop: '1px solid #f1f5f9' }}>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
           <button
             className="w-full py-4 text-base font-semibold"
-            style={{ color: danger ? '#e83030' : '#6366f1' }}
+            style={{ color: danger ? '#e83030' : '#e83030' }}
             onClick={onConfirm}
           >
             {confirmLabel}
           </button>
         </div>
-        <div style={{ borderTop: '1px solid #f1f5f9' }}>
-          <button className="w-full py-4 text-base text-slate-400" onClick={onCancel}>取消</button>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <button className="w-full py-4 text-base text-gray-400" onClick={onCancel}>取消</button>
         </div>
         <div style={{ height: 8 }} />
       </div>
@@ -86,22 +86,22 @@ export default function OrderDetailPage() {
     finally { setActing(false) }
   }
 
-  if (loading) return <div className="min-h-screen bg-dark flex items-center justify-center text-gray-400">加载中...</div>
-  if (!order) return <div className="min-h-screen bg-dark flex items-center justify-center text-gray-400">订单不存在</div>
+  if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-400" style={{ background: '#0a0a0f' }}>加载中...</div>
+  if (!order) return <div className="min-h-screen flex items-center justify-center text-gray-400" style={{ background: '#0a0a0f' }}>订单不存在</div>
 
   const currentStep = isClosed ? -1 : STATUS_STEPS.findIndex((s) => s.key === order.status)
   const mm = String(Math.floor(countdown / 60000)).padStart(2, '0')
   const ss = String(Math.floor((countdown % 60000) / 1000)).padStart(2, '0')
 
   return (
-    <div className="min-h-screen bg-dark pb-24">
-      <div className="sticky top-0 bg-dark border-b border-dark-border px-4 h-12 flex items-center">
-        <button onClick={() => navigate(-1)} className="text-white p-1 -ml-1">
+    <div className="min-h-screen pb-24" style={{ background: '#0a0a0f' }}>
+      <div className="sticky top-0 border-b px-4 h-12 flex items-center" style={{ background: 'rgba(10,10,15,0.85)', borderColor: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)' }}>
+        <button onClick={() => navigate(-1)} className="text-gray-100 p-1 -ml-1">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" /></svg>
         </button>
-        <span className="flex-1 text-center text-white font-medium">订单详情</span>
+        <span className="flex-1 text-center text-gray-100 font-medium">订单详情</span>
         {isAssignee && !isClosed && (
-          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(99,102,241,0.15)', color: '#6366f1' }}>我的任务</span>
+          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(232,48,48,0.15)', color: '#e83030' }}>我的任务</span>
         )}
       </div>
 
@@ -127,7 +127,7 @@ export default function OrderDetailPage() {
       <div className="p-4 space-y-3">
         {/* 进度步骤 */}
         {!isClosed && (
-          <div className="bg-dark-card rounded-xl p-4">
+          <div className="rounded-xl p-4" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <div className="flex items-center justify-between">
               {STATUS_STEPS.map((step, i) => (
                 <div key={step.key} className="flex-1 flex flex-col items-center relative">
@@ -144,35 +144,35 @@ export default function OrderDetailPage() {
 
         {/* 待付款倒计时 */}
         {order.status === 'PENDING_PAY' && countdown > 0 && (
-          <div className="bg-dark-card rounded-xl px-4 py-3 flex items-center justify-between">
+          <div className="rounded-xl px-4 py-3 flex items-center justify-between" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <span className="text-gray-400 text-sm">请在以下时间内完成支付</span>
             <span className="font-bold tabular-nums" style={{ color: '#e83030', fontSize: 18 }}>{mm}:{ss}</span>
           </div>
         )}
 
-        <div className="bg-dark-card rounded-xl p-4 flex gap-3">
+        <div className="rounded-xl p-4 flex gap-3" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)' }}>
           {order.product?.thumbnail && <img src={order.product.thumbnail} alt="" className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />}
           <div className="flex-1">
-            <p className="text-white text-sm font-medium">{order.productName}</p>
+            <p className="text-gray-100 text-sm font-medium">{order.productName}</p>
             {order.spec && <p className="text-gray-500 text-xs mt-1">{order.spec}</p>}
             <p className="text-primary font-bold mt-1">￥{Number(order.price).toFixed(2)}</p>
           </div>
         </div>
 
-        <div className="bg-dark-card rounded-xl p-4 space-y-2">
-          <div className="flex justify-between"><span className="text-gray-400 text-sm">订单号</span><span className="text-white text-sm">{order.orderNo}</span></div>
-          {order.assignee && <div className="flex justify-between"><span className="text-gray-400 text-sm">接单人</span><span className="text-white text-sm">{order.assignee.nickname}</span></div>}
-          <div className="flex justify-between"><span className="text-gray-400 text-sm">下单时间</span><span className="text-white text-sm">{new Date(order.createdAt).toLocaleString('zh-CN')}</span></div>
-          {order.payTime && <div className="flex justify-between"><span className="text-gray-400 text-sm">支付时间</span><span className="text-white text-sm">{new Date(order.payTime).toLocaleString('zh-CN')}</span></div>}
-          {order.deliverTime && <div className="flex justify-between"><span className="text-gray-400 text-sm">交单时间</span><span className="text-white text-sm">{new Date(order.deliverTime).toLocaleString('zh-CN')}</span></div>}
-          {order.completedAt && <div className="flex justify-between"><span className="text-gray-400 text-sm">完成时间</span><span className="text-white text-sm">{new Date(order.completedAt).toLocaleString('zh-CN')}</span></div>}
+        <div className="rounded-xl p-4 space-y-2" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="flex justify-between"><span className="text-gray-400 text-sm">订单号</span><span className="text-gray-100 text-sm">{order.orderNo}</span></div>
+          {order.assignee && <div className="flex justify-between"><span className="text-gray-400 text-sm">接单人</span><span className="text-gray-100 text-sm">{order.assignee.nickname}</span></div>}
+          <div className="flex justify-between"><span className="text-gray-400 text-sm">下单时间</span><span className="text-gray-100 text-sm">{new Date(order.createdAt).toLocaleString('zh-CN')}</span></div>
+          {order.payTime && <div className="flex justify-between"><span className="text-gray-400 text-sm">支付时间</span><span className="text-gray-100 text-sm">{new Date(order.payTime).toLocaleString('zh-CN')}</span></div>}
+          {order.deliverTime && <div className="flex justify-between"><span className="text-gray-400 text-sm">交单时间</span><span className="text-gray-100 text-sm">{new Date(order.deliverTime).toLocaleString('zh-CN')}</span></div>}
+          {order.completedAt && <div className="flex justify-between"><span className="text-gray-400 text-sm">完成时间</span><span className="text-gray-100 text-sm">{new Date(order.completedAt).toLocaleString('zh-CN')}</span></div>}
           {order.isComplained && <div className="flex justify-between"><span className="text-gray-400 text-sm">投诉状态</span><span className="text-yellow-400 text-sm">已投诉</span></div>}
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-dark border-t border-dark-border px-4 py-3 pb-safe space-y-2">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] border-t px-4 py-3 pb-safe space-y-2" style={{ background: '#0a0a0f', borderColor: 'rgba(255,255,255,0.06)' }}>
         {order.status === 'PENDING_PAY' && !isAssignee && countdown > 0 && (
-          <button onClick={() => navigate(`/pay/${id}`)} className="w-full text-white rounded-xl py-3 font-bold" style={{ background: 'linear-gradient(135deg,#1677ff 0%,#0958d9 100%)' }}>
+          <button onClick={() => navigate(`/pay/${id}`)} className="w-full text-white rounded-xl py-3 font-bold" style={{ background: 'linear-gradient(135deg, #e83030 0%, #f87171 100%)' }}>
             去支付 ¥{Number(order.price).toFixed(2)}
           </button>
         )}
