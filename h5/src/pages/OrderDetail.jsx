@@ -86,6 +86,13 @@ export default function OrderDetailPage() {
     finally { setActing(false) }
   }
 
+  async function handleClose() {
+    setActing(true)
+    try { await closeOrder(id); refresh() }
+    catch (e) { alert(e.message) }
+    finally { setActing(false) }
+  }
+
   if (loading) return <div className="min-h-screen flex items-center justify-center text-gray-400" style={{ background: '#0a0a0f' }}>加载中...</div>
   if (!order) return <div className="min-h-screen flex items-center justify-center text-gray-400" style={{ background: '#0a0a0f' }}>订单不存在</div>
 
@@ -174,6 +181,11 @@ export default function OrderDetailPage() {
         {order.status === 'PENDING_PAY' && !isAssignee && countdown > 0 && (
           <button onClick={() => navigate(`/pay/${id}`)} className="w-full text-white rounded-xl py-3 font-bold" style={{ background: 'linear-gradient(135deg, #e83030 0%, #f87171 100%)' }}>
             去支付 ¥{Number(order.price).toFixed(2)}
+          </button>
+        )}
+        {order.status === 'PENDING_PAY' && !isAssignee && countdown <= 0 && (
+          <button onClick={handleClose} disabled={acting} className="w-full text-gray-400 rounded-xl py-3 font-medium border border-gray-700 disabled:opacity-60">
+            {acting ? '处理中...' : '订单已超时，点击关闭'}
           </button>
         )}
         {order.status === 'PENDING_DELIVERY' && isAssignee && (
