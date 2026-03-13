@@ -2,7 +2,11 @@ import request from './request'
 
 // 认证
 export const sendCode = (phone) => request.post('/auth/send-code', { phone })
-export const login = (phone, code) => request.post('/auth/login', { phone, code })
+export const login = (phone, code, from, deviceId) => request.post('/auth/login', { phone, code, from, deviceId })
+export const silentLogin = (deviceId) => request.post('/auth/silent', { deviceId })
+export const checkDevice = (deviceId) => request.post('/auth/check-device', { deviceId })
+export const exchangeCode = (code) => request.post('/auth/exchange', { code })
+export const bindPhone = (phone, code) => request.post('/auth/bind-phone', { phone, code })
 export const getMe = () => request.get('/auth/me')
 export const updateProfile = (data) => request.put('/auth/profile', data)
 export const uploadAvatar = (file) => {

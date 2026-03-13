@@ -31,9 +31,10 @@ function getClient() {
  * @param {string} params.orderNo 订单号
  * @param {string} params.subject 商品标题
  * @param {string} params.totalAmount 金额（字符串，精确到分）
+ * @param {string} [params.returnUrl] 自定义返回URL（可选）
  * @returns {string} 支付宝支付页面 URL
  */
-function createWapPay({ orderNo, subject, totalAmount }) {
+function createWapPay({ orderNo, subject, totalAmount, returnUrl }) {
   const client = getClient()
 
   const result = client.pageExec('alipay.trade.wap.pay', 'GET', {
@@ -44,7 +45,7 @@ function createWapPay({ orderNo, subject, totalAmount }) {
       subject,
       timeoutExpress: '30m',
     },
-    returnUrl: process.env.ALIPAY_RETURN_URL,
+    returnUrl: returnUrl || process.env.ALIPAY_RETURN_URL,
     notifyUrl: process.env.ALIPAY_NOTIFY_URL,
   })
 

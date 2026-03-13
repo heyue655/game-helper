@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { getOrderByNo } from '../api'
+import useAuthStore from '../store/auth'
 
 export default function PayResultPage() {
     const [searchParams] = useSearchParams()
@@ -8,22 +9,36 @@ export default function PayResultPage() {
     const [status, setStatus] = useState('loading')
     const [orderId, setOrderId] = useState(null)
     const [countdown, setCountdown] = useState(3)
+    const { exchangeCode } = useAuthStore()
   
     const orderNo = searchParams.get('out_trade_no')
+    const authCode = searchParams.get('authCode')
   
     useEffect(() => {
-        if (!orderNo) {
-            setStatus('error')
-            return
-        }
-        getOrderByNo(orderNo)
-            .then((r) => {
+        const init = async () => {
+            if (authCode) {
+                const result = await exchangeCode(authCode)
+                if (!result.success) {
+                    console.warn('[PayResult] exchangeCode failed:', result.error)
+                }
+            }
+
+            if (!orderNo) {
+                setStatus('error')
+                return
+            }
+
+            try {
+                const r = await getOrderByNo(orderNo)
                 const order = r.data
                 setOrderId(order.id)
                 setStatus(order.status === 'PENDING_PAY' ? 'pending' : 'success')
-            })
-            .catch(() => setStatus('error'))
-    }, [orderNo])
+            } catch {
+                setStatus('error')
+            }
+        }
+        init()
+    }, [orderNo, authCode])
   
     useEffect(() => {
         if (status !== 'success') return

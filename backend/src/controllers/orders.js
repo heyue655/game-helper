@@ -1,6 +1,7 @@
 const { PrismaClient } = require('@prisma/client')
 const dayjs = require('dayjs')
 const { createWapPay } = require('../utils/alipay')
+const { createAuthCode } = require('../controllers/auth')
 const { success, fail } = require('../utils/response')
 
 const prisma = new PrismaClient()
@@ -45,7 +46,6 @@ async function createOrder(req, res) {
   const product = await prisma.product.findUnique({ where: { id: BigInt(productId) } })
   if (!product || product.status === 'OFF') return fail(res, '商品不存在或已下架', 404)
 
-  // 检查用户是否被拉黑
   const user = await prisma.user.findUnique({ where: { id: req.userId } })
   if (user?.isBlacklisted) return fail(res, '账号已被封禁，无法下单', 403)
 
@@ -65,6 +65,10 @@ async function createOrder(req, res) {
 
   let payUrl = null
   try {
+    const authCode = await createAuthCode(req.userId, order.id)
+    const baseUrl = process.env.ALIPAY_RETURN_URL || 'https://game.pinyanzhi.net/pay/result'
+    const returnUrl = `${baseUrl}?authCode=${authCode}`
+    
     const totalAmount = Number(product.price).toFixed(2)
     console.log('[Alipay] Creating pay, orderNo:', orderNo, 'subject:', product.name, 'totalAmount:', totalAmount)
     
@@ -72,6 +76,7 @@ async function createOrder(req, res) {
       orderNo,
       subject: product.name,
       totalAmount: totalAmount,
+      returnUrl,
     })
     console.log('[Alipay] payUrl generated, full URL:', payUrl)
   } catch (err) {

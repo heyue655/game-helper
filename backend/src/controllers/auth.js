@@ -1,12 +1,14 @@
 const { PrismaClient } = require('@prisma/client')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const crypto = require('crypto')
 const redis = require('../utils/redis')
 const { sendVerifyCode } = require('../utils/sms')
 const { success, fail } = require('../utils/response')
 
 const prisma = new PrismaClient()
-const CODE_TTL = 300 // 验证码有效期5分钟
+const CODE_TTL = 300
+const AUTH_CODE_TTL = 15 * 60 * 1000
 
 // POST /api/auth/send-code
 async function sendCode(req, res) {
@@ -36,7 +38,7 @@ async function sendCode(req, res) {
 
 // POST /api/auth/login
 async function login(req, res) {
-  const { phone, code } = req.body
+  const { phone, code, deviceId } = req.body
   if (!phone || !code) return fail(res, '参数不完整')
 
   const storedCode = await redis.get(`sms:code:${phone}`)
@@ -55,6 +57,20 @@ async function login(req, res) {
 
   if (user.isBlacklisted) return fail(res, '账号已被封禁', 403)
 
+  if (deviceId) {
+    const existingUser = await prisma.user.findUnique({ where: { deviceId } })
+    if (existingUser && existingUser.id !== user.id) {
+      await prisma.user.update({
+        where: { id: existingUser.id },
+        data: { deviceId: null },
+      })
+    }
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: { deviceId },
+    })
+  }
+
   const token = jwt.sign(
     { id: user.id.toString(), type: 'user' },
     process.env.JWT_SECRET,
@@ -63,15 +79,7 @@ async function login(req, res) {
 
   return success(res, {
     token,
-    user: {
-      id: user.id.toString(),
-      phone: user.phone,
-      nickname: user.nickname,
-      avatar: user.avatar,
-      gender: user.gender,
-      age: user.age,
-      game: user.game,
-    },
+    user: formatUser(user),
   })
 }
 
@@ -133,6 +141,7 @@ async function getMe(req, res) {
   return success(res, {
     id: user.id.toString(),
     phone: user.phone,
+    deviceId: user.deviceId,
     nickname: user.nickname,
     avatar: user.avatar,
     gender: user.gender,
@@ -141,4 +150,136 @@ async function getMe(req, res) {
   })
 }
 
-module.exports = { sendCode, login, adminLogin, updateProfile, getMe }
+function formatUser(user) {
+  return {
+    id: user.id.toString(),
+    phone: user.phone,
+    deviceId: user.deviceId,
+    nickname: user.nickname,
+    avatar: user.avatar,
+    gender: user.gender,
+    age: user.age,
+    game: user.game,
+  }
+}
+
+// POST /api/auth/check-device
+async function checkDevice(req, res) {
+  const { deviceId } = req.body
+  if (!deviceId) return fail(res, 'deviceId 必填')
+
+  const user = await prisma.user.findUnique({ where: { deviceId } })
+  if (!user) return success(res, { exists: false })
+
+  return success(res, {
+    exists: true,
+    hasPhone: !!user.phone,
+    user: user.phone ? formatUser(user) : null,
+  })
+}
+
+// POST /api/auth/silent
+async function silentLogin(req, res) {
+  const { deviceId } = req.body
+  if (!deviceId) return fail(res, 'deviceId 必填')
+
+  let user = await prisma.user.findUnique({ where: { deviceId } })
+  let isNewUser = false
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        deviceId,
+        nickname: `用户${deviceId.slice(-6)}`,
+      },
+    })
+    isNewUser = true
+  }
+
+  if (user.isBlacklisted) return fail(res, '账号已被封禁', 403)
+
+  const token = jwt.sign(
+    { id: user.id.toString(), type: 'user' },
+    process.env.JWT_SECRET,
+    { expiresIn: '30d' },
+  )
+
+  console.log('[silentLogin] deviceId:', deviceId, 'userId:', user.id.toString(), 'phone:', user.phone, 'isNewUser:', isNewUser)
+  return success(res, { token, user: formatUser(user), isNewUser })
+}
+
+// POST /api/auth/exchange
+async function exchangeCode(req, res) {
+  const { code } = req.body
+  if (!code) return fail(res, '授权码必填')
+
+  const authCode = await prisma.authCode.findUnique({ 
+    where: { code },
+    include: { user: true }
+  })
+
+  if (!authCode) return fail(res, '授权码无效', 401)
+  if (authCode.expiresAt < new Date()) return fail(res, '授权码已过期', 401)
+  if (authCode.user.isBlacklisted) return fail(res, '账号已被封禁', 403)
+
+  await prisma.authCode.delete({ where: { code } })
+
+  const token = jwt.sign(
+    { id: authCode.user.id.toString(), type: 'user' },
+    process.env.JWT_SECRET,
+    { expiresIn: '30d' },
+  )
+
+  return success(res, { token, user: formatUser(authCode.user) })
+}
+
+async function createAuthCode(userId, orderId = null) {
+  const code = crypto.randomBytes(32).toString('hex')
+  await prisma.authCode.create({
+    data: {
+      code,
+      userId,
+      orderId,
+      expiresAt: new Date(Date.now() + AUTH_CODE_TTL),
+    },
+  })
+  return code
+}
+
+async function bindPhone(req, res) {
+  const { phone, code } = req.body
+  if (!phone || !code) return fail(res, '参数不完整')
+  if (!/^1[3-9]\d{9}$/.test(phone)) return fail(res, '手机号格式不正确')
+
+  const storedCode = await redis.get(`sms:code:${phone}`)
+  if (!storedCode || storedCode !== code) {
+    return fail(res, '验证码错误或已过期')
+  }
+
+  await redis.del(`sms:code:${phone}`)
+
+  const existingUser = await prisma.user.findUnique({ where: { phone } })
+  if (existingUser && existingUser.id.toString() !== req.userId.toString()) {
+    return fail(res, '该手机号已被其他账号绑定')
+  }
+
+  const user = await prisma.user.update({
+    where: { id: req.userId },
+    data: { phone },
+  })
+
+  return success(res, formatUser(user))
+}
+
+module.exports = { 
+  sendCode, 
+  login, 
+  adminLogin, 
+  updateProfile, 
+  getMe,
+  silentLogin,
+  checkDevice,
+  exchangeCode, 
+  bindPhone, 
+  createAuthCode,
+}

@@ -9,7 +9,8 @@ datasource db {
 
 model User {
   id             BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
-  phone          String    @unique @db.VarChar(20)
+  phone          String?   @unique @db.VarChar(20)
+  deviceId       String?   @unique @map("device_id") @db.VarChar(64)
   nickname       String    @default("") @db.VarChar(50)
   avatar         String    @default("") @db.VarChar(500)
   gender         Int       @default(0) @db.TinyInt
@@ -24,6 +25,7 @@ model User {
   assignedOrders Order[]   @relation("AssigneeOrders")
   complaints     Complaint[]
   favorites      Favorite[]
+  authCodes      AuthCode[]
 
   @@map("users")
 }
@@ -143,6 +145,7 @@ model Order {
   product     Product     @relation(fields: [productId], references: [id])
   assignee    User?       @relation("AssigneeOrders", fields: [assigneeId], references: [id])
   complaint   Complaint?
+  authCodes   AuthCode[]
 
   @@map("orders")
 }
@@ -190,4 +193,18 @@ model PlatformNote {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("platform_notes")
+}
+
+model AuthCode {
+  id        String   @id @default(uuid())
+  code      String   @unique @db.VarChar(64)
+  userId    BigInt   @map("user_id") @db.UnsignedBigInt
+  orderId   BigInt?  @map("order_id") @db.UnsignedBigInt
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User   @relation(fields: [userId], references: [id])
+  order Order? @relation(fields: [orderId], references: [id])
+
+  @@map("auth_codes")
 }

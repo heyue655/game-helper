@@ -61,7 +61,6 @@ export default function MyPage() {
             </div>
 
             <div className="px-4 space-y-3 pb-4 -mt-5 relative z-[1]">
-                {/* 订单入口 */}
                 <div className="rounded-2xl p-4" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
                     <div className="flex items-center justify-between mb-3">
                         <span className="text-gray-100 font-medium">我的订单</span>
@@ -80,7 +79,6 @@ export default function MyPage() {
                     </div>
                 </div>
 
-                {/* 功能菜单 */}
                 <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(30,30,35,0.8)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>
                     {[
                         { label: '我的任务', to: '/my-tasks', badge: counts.taskPendingDelivery },
