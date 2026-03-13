@@ -11,10 +11,12 @@ const STATUS_STEPS = [
 ]
 
 function useCountdown(targetMs) {
-  const [remaining, setRemaining] = useState(() => Math.max(0, targetMs - Date.now()))
+  const [remaining, setRemaining] = useState(0)
+
   useEffect(() => {
-    if (remaining <= 0) return
-    const t = setInterval(() => setRemaining((r) => Math.max(0, targetMs - Date.now())), 1000)
+    setRemaining(Math.max(0, targetMs - Date.now()))
+    if (targetMs <= 0) return
+    const t = setInterval(() => setRemaining(Math.max(0, targetMs - Date.now())), 1000)
     return () => clearInterval(t)
   }, [targetMs])
   return remaining
@@ -181,11 +183,6 @@ export default function OrderDetailPage() {
         {order.status === 'PENDING_PAY' && !isAssignee && countdown > 0 && (
           <button onClick={() => navigate(`/pay/${id}`)} className="w-full text-white rounded-xl py-3 font-bold" style={{ background: 'linear-gradient(135deg, #e83030 0%, #f87171 100%)' }}>
             去支付 ¥{Number(order.price).toFixed(2)}
-          </button>
-        )}
-        {order.status === 'PENDING_PAY' && !isAssignee && countdown <= 0 && (
-          <button onClick={handleClose} disabled={acting} className="w-full text-gray-400 rounded-xl py-3 font-medium border border-gray-700 disabled:opacity-60">
-            {acting ? '处理中...' : '订单已超时，点击关闭'}
           </button>
         )}
         {order.status === 'PENDING_DELIVERY' && isAssignee && (
