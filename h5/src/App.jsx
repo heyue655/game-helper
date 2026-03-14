@@ -18,6 +18,7 @@ import ProfileEditPage from './pages/ProfileEdit'
 import PayPage from './pages/Pay'
 import PayResultPage from './pages/PayResult'
 import EarningsPage from './pages/Earnings'
+import CustomerServicePage from './pages/CustomerService'
 
 export default function App() {
   const { token, initialized, silentLogin, setInitialized, setUser } = useAuthStore()
@@ -90,6 +91,7 @@ export default function App() {
       <Route path="/favorites" element={<FavoritesPage />} />
       <Route path="/complaint/:orderId" element={<ComplaintPage />} />
       <Route path="/profile/edit" element={<ProfileEditPage />} />
+      <Route path="/customer-service" element={<CustomerServicePage />} />
     </Routes>
   )
 }

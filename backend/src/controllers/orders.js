@@ -192,18 +192,34 @@ async function complainOrder(req, res) {
 }
 
 
-// POST /api/orders/:id/mock-pay  — 模拟支付（支付宝未配置时使用）
-async function mockPayOrder(req, res) {
+// GET /api/orders/:id/pay-url — 获取待付款订单的支付链接
+async function getPayUrl(req, res) {
   const order = await prisma.order.findFirst({
     where: { id: BigInt(req.params.id), userId: req.userId, status: 'PENDING_PAY' },
   })
   if (!order) return fail(res, '订单不存在或状态不正确', 404)
 
-  await prisma.order.update({
-    where: { id: order.id },
-    data: { status: 'PENDING_ASSIGN', payTime: new Date() },
-  })
-  return success(res, null, '支付成功')
+  let payUrl = null
+  try {
+    const authCode = await createAuthCode(req.userId, order.id)
+    const baseUrl = process.env.ALIPAY_RETURN_URL || 'https://game.pinyanzhi.net/pay/result'
+    const returnUrl = `${baseUrl}?authCode=${authCode}`
+
+    const totalAmount = Number(order.price).toFixed(2)
+    console.log('[Alipay] Getting payUrl for existing order:', order.orderNo)
+
+    payUrl = createWapPay({
+      orderNo: order.orderNo,
+      subject: order.productName,
+      totalAmount,
+      returnUrl,
+    })
+  } catch (err) {
+    console.error('[Alipay getPayUrl error]', err.message)
+    return fail(res, '获取支付链接失败', 500)
+  }
+
+  return success(res, { payUrl })
 }
 
 // GET /api/orders/counts — 当前用户各状态订单数 + 接单人待交单数
@@ -308,7 +324,7 @@ async function getMyEarnings(req, res) {
   })
 }
 
-module.exports = { createOrder, listOrders, getOrder, getOrderByNo, deliverOrder, reviewOrder, complainOrder, mockPayOrder, getOrderCounts, listMyTasks, closeOrder, getMyEarnings }
+module.exports = { createOrder, listOrders, getOrder, getOrderByNo, getPayUrl, deliverOrder, reviewOrder, complainOrder, getOrderCounts, listMyTasks, closeOrder, getMyEarnings }
 
 
 

@@ -359,6 +359,11 @@ router.patch('/users/:id/blacklist', authAdmin, async (req, res) => {
 
 router.patch('/users/:id/builtin', authAdmin, async (req, res) => {
   const { builtin } = req.body
+  if (builtin) {
+    const user = await prisma.user.findUnique({ where: { id: BigInt(req.params.id) } })
+    if (!user) return fail(res, '用户不存在', 404)
+    if (!user.phone) return fail(res, '该用户未绑定手机号，无法设为打手')
+  }
   await prisma.user.update({
     where: { id: BigInt(req.params.id) },
     data: { isBuiltin: !!builtin },

@@ -20,6 +20,9 @@ FROM nginx:latest
 # 拷贝构建产物
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# 拷贝客服二维码图片
+COPY --from=builder /app/csr /usr/share/nginx/html/csr
+
 # 拷贝 Nginx 配置（含 SPA 兜底 + /api 反向代理）
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
