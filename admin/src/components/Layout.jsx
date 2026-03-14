@@ -34,7 +34,7 @@ export default function AdminLayout() {
       <Sider width={220} theme="light" style={{ background: 'rgba(255,255,255,0.72)', border: '1px solid rgba(255,255,255,0.82)', borderRadius: 24, overflow: 'hidden', boxShadow: '0 14px 40px rgba(99,102,241,0.10)', backdropFilter: 'blur(18px)' }}>
         <div style={{ padding: '18px 14px', textAlign: 'center', borderBottom: '1px solid rgba(148,163,184,0.16)' }}>
           <LogoIcon size={52} style={{ marginBottom: 8 }} />
-          <Typography.Text strong style={{ color: '#4338ca', fontSize: 18, display: 'block' }}>后端系统</Typography.Text>
+          <Typography.Text strong style={{ color: '#4338ca', fontSize: 18, display: 'block' }}>和悦电竞</Typography.Text>
         </div>
         <Menu mode="inline" selectedKeys={[location.pathname]} items={menuItems} onClick={({ key }) => navigate(key)} style={{ background: 'transparent', borderRight: 'none', padding: 12 }} />
       </Sider>

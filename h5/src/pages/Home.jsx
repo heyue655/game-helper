@@ -56,7 +56,7 @@ export default function HomePage() {
   const navigate = useNavigate()
   const [keyword, setKeyword] = useState('')
   const [gameFilter, setGameFilter] = useState('')
-  const [gameOptions, setGameOptions] = useState([{ value: '', label: '全部商品' }])
+  const [gameOptions, setGameOptions] = useState([{ value: '', label: '全部游戏' }])
   const [banners, setBanners] = useState([])
   const [zones, setZones] = useState([])
   const [products, setProducts] = useState([])
@@ -70,7 +70,7 @@ export default function HomePage() {
     getZones().then((r) => setZones(r.data || []))
     getGames().then((r) => {
       const dynamicOptions = (r.data || []).map((g) => ({ value: g.name, label: g.name }))
-      setGameOptions([{ value: '', label: '全部商品' }, ...dynamicOptions])
+      setGameOptions([{ value: '', label: '全部游戏' }, ...dynamicOptions])
     })
   }, [])
 

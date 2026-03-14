@@ -1,4 +1,4 @@
--- 游戏接单系统数据库设计
+-- 和悦电竞系统数据库设计
 -- MySQL 8.0+
 -- 创建数据库
 CREATE DATABASE IF NOT EXISTS game_helper DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
